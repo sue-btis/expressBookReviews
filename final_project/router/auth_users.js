@@ -15,9 +15,16 @@ const authenticatedUser = (username,password)=>{ //returns boolean
 
 //only registered users can login
 regd_users.post("/login", (req,res) => {
-  //Write your code here
-  return res.status(300).json({message: "Yet to be implemented"});
-});
+    const username = req.body.username;
+    const password = req.body.password;
+
+if (authenticatedUser(username, password)) {
+  const accessToken = jwt.sign({ data: password }, "access", { expiresIn: 3600 });
+  req.session.authorization = { username, accessToken };
+  res.status(200).send("User successfully logged in");
+} else {
+  res.status(208).json({ message: "Invalid username or password" });
+}});
 
 // Add a book review
 regd_users.put("/auth/review/:isbn", (req, res) => {
